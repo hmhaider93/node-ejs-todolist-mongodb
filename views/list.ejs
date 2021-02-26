@@ -9,19 +9,22 @@
 </head>
 <body>
     <div class="box" id="heading">
-        <h1>Today it is <%= nameOfDay %></h1>
+        <h1><%= nameOfList %></h1>
     </div>
     
     <div class="box">
-        <%for( x = 0 ; x < listOfItems.length ; x++){%>
+        <%listOfItems.forEach((item)=>{%>
+            <form action="/delete" method="post">
             <div class="item">
-                <input type="checkbox">
-                <p><%= listOfItems[x] %> </p>
+                <input type="checkbox" name="checkbox" onchange="this.form.submit()" value="<%= item._id %> ">
+                <input type="hidden" name="listName" value="<%= nameOfList %> "/>
+                <p><%= item.name %> </p>
             </div>
-        <%}%>
+        </form>
+        <%})%>
         <form class="item" action="/" method="post">
             <input type="text" name="task" placeholder="Add things to do" autocomplete="off">
-            <button type="submit">+</button>
+            <button type="submit" name="button" value="<%= nameOfList %> ">+</button>
             </form>
     </div>
     
