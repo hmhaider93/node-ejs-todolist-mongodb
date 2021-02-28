@@ -143,17 +143,26 @@ app.post('/delete',(req,res)=>{
             res.redirect('/')}
         })
     }else{
-        Item.findByIdAndRemove(itemId,(err)=>{
+        console.log("Going to try to delete : " + itemId);
+        List.findOneAndUpdate({name: listName},{$pull:{items:{_id:itemId}}},function(err,foundList){
             if(err) console.log(err);
-            else {console.log("successfully deleted item");
-            res.redirect('/' + listName)}})
+            else {
+                console.log("Match found and deleted item from list: " + foundList);
+                res.redirect('/' + listName);
+            }
+        });
     }
     
 });
 
+app.get('/favicon.ico' ,(req,res)=>{
+    console.log("Favicon was called and ignored");
+})
+
 app.get('/:listName',function(req,res){
-    const listName = req.params.listName;
-    console.log("Want to create new list: " + listName);
+    const listName = req.params.listName.trim();
+    console.log("List Name: " + listName);
+    
 
     List.findOne({name:listName},function(err,list) {
         if(err) console.log(err);
@@ -167,6 +176,7 @@ app.get('/:listName',function(req,res){
                 
             }else{
                 console.log("List doesn't exist");
+                console.log("Want to create new list: " + listName);
                 const list = new List({
                     name: listName,
                     items: [item1,item2,item3]
@@ -185,5 +195,9 @@ app.get('/:listName',function(req,res){
 
 
 })
+
+
+
+
 
 app.listen(port, () => console.log(`Example app listening on port port!`));
